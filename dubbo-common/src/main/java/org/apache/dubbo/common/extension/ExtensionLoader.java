@@ -44,6 +44,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Pattern;
 
 /**
+ * 拓展加载器。这是 Dubbo SPI 的核心
  * Load dubbo extensions
  * <ul>
  * <li>auto inject dependency extension </li>
@@ -68,18 +69,41 @@ public class ExtensionLoader<T> {
 
     private static final Pattern NAME_SEPARATOR = Pattern.compile("\\s*[,]+\\s*");
 
-    private static final ConcurrentMap<Class<?>, ExtensionLoader<?>> EXTENSION_LOADERS = new ConcurrentHashMap<Class<?>, ExtensionLoader<?>>();
+    // ============================== 静态属性 ==============================
+    /**
+     * 拓展加载器集合
+     *  key：拓展接口
+     */
 
+    private static final ConcurrentMap<Class<?>, ExtensionLoader<?>> EXTENSION_LOADERS = new ConcurrentHashMap<Class<?>, ExtensionLoader<?>>();
+    /**
+     * 拓展实现类集合
+     * key：拓展实现类 value：拓展对象
+     */
     private static final ConcurrentMap<Class<?>, Object> EXTENSION_INSTANCES = new ConcurrentHashMap<Class<?>, Object>();
 
-    // ==============================
-
+    // ============================== 对象属性 ==============================
+    /**
+     * 拓展接口
+     * 例如，Protocol
+     */
     private final Class<?> type;
-
+    /**
+     * 对象工厂
+     * 用于调用 {@link #injectExtension(Object)} 方法，向拓展对象注入依赖属性
+     */
     private final ExtensionFactory objectFactory;
-
+    /**
+     * 缓存的拓展名与拓展类的映射 和 {@link #cachedClasses} 的 KV 对调 通过 {@link #loadExtensionClasses} 加载
+     */
     private final ConcurrentMap<Class<?>, String> cachedNames = new ConcurrentHashMap<Class<?>, String>();
-
+    /**
+     * 缓存的拓展实现类集合
+     * 不包含如下两种类型：
+     *  1. 自适应拓展实现类。例如 AdaptiveExtensionFactory
+     *  2. 带唯一参数为拓展接口的构造方法的实现类，或者说拓展 Wrapper 实现类。例如，ProtocolFilterWrapper 。
+     *  拓展 Wrapper 实现类，会添加到 {@link #cachedWrapperClasses} 通过 {@link #loadExtensionClasses} 加载
+     */
     private final Holder<Map<String, Class<?>>> cachedClasses = new Holder<Map<String, Class<?>>>();
 
     private final Map<String, Activate> cachedActivates = new ConcurrentHashMap<String, Activate>();
