@@ -303,7 +303,7 @@ public class ExtensionLoader<T> {
         }
         Object instance = holder.get();
         if (instance == null) {
-            synchronized (holder) {
+             synchronized (holder) {
                 instance = holder.get();
                 if (instance == null) {
                     instance = createExtension(name);
