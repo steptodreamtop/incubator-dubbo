@@ -33,9 +33,13 @@ import java.net.ServerSocket;
  *
  */
 public class SimpleRegistryExporter {
-
+    /**
+     * 自适应 Protocol 实现对象
+     */
     private static final Protocol protocol = ExtensionLoader.getExtensionLoader(Protocol.class).getAdaptiveExtension();
-
+    /**
+     * 自适应 ProxyFactory 实现对象
+     */
     private static final ProxyFactory proxyFactory = ExtensionLoader.getExtensionLoader(ProxyFactory.class).getAdaptiveExtension();
 
     public synchronized static Exporter<RegistryService> exportIfAbsent(int port) {
