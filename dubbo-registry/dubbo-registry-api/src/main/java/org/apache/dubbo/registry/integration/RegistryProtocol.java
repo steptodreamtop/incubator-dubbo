@@ -73,6 +73,9 @@ public class RegistryProtocol implements Protocol {
     // 用于解决rmi重复暴露端口冲突的问题，已经暴露过的服务不再重新暴露
     // providerurl <--> exporter
     private final Map<String, ExporterChangeableWrapper<?>> bounds = new ConcurrentHashMap<String, ExporterChangeableWrapper<?>>();
+    /**
+     * Cluster 自适应拓展实现类对象
+     */
     private Cluster cluster;
     /**
      * Protocol 自适应拓展实现类，通过 Dubbo SPI 自动注入。
@@ -305,12 +308,14 @@ public class RegistryProtocol implements Protocol {
     @Override
     @SuppressWarnings("unchecked")
     public <T> Invoker<T> refer(Class<T> type, URL url) throws RpcException {
+        // 获得真实的注册中心的 URL
         url = url.setProtocol(url.getParameter(Constants.REGISTRY_KEY, Constants.DEFAULT_REGISTRY)).removeParameter(Constants.REGISTRY_KEY);
         Registry registry = registryFactory.getRegistry(url);
         if (RegistryService.class.equals(type)) {
             return proxyFactory.getInvoker((T) registry, type, url);
         }
 
+        // 获得服务引用配置参数集合
         // group="a,b" or group="*"
         Map<String, String> qs = StringUtils.parseQueryString(url.getParameterAndDecoded(Constants.REFER_KEY));
         String group = qs.get(Constants.GROUP_KEY);
