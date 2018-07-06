@@ -501,7 +501,13 @@ public class RegistryProtocol implements Protocol {
 
         public static final ExecutorService executor = Executors.newSingleThreadExecutor(new NamedThreadFactory("Exporter-Unexport", true));
 
+        /**
+         * 暴露的 Exporter 对象
+         */
         private Exporter<T> exporter;
+        /**
+         * 原 Invoker 对象
+         */
         private Invoker<T> originInvoker;
         private URL subscribeUrl;
         private URL registerUrl;

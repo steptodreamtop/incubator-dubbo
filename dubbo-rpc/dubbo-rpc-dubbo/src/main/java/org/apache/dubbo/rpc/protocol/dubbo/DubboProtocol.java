@@ -314,17 +314,19 @@ public class DubboProtocol extends AbstractProtocol {
         // enable heartbeat by default
         url = url.addParameterIfAbsent(Constants.HEARTBEAT_KEY, String.valueOf(Constants.DEFAULT_HEARTBEAT));
         String str = url.getParameter(Constants.SERVER_KEY, Constants.DEFAULT_REMOTING_SERVER);
-
+        // 校验 Server 的 Dubbo SPI 拓展是否存在
         if (str != null && str.length() > 0 && !ExtensionLoader.getExtensionLoader(Transporter.class).hasExtension(str))
             throw new RpcException("Unsupported server type: " + str + ", url: " + url);
 
         url = url.addParameter(Constants.CODEC_KEY, DubboCodec.NAME);
+        // 启动服务器
         ExchangeServer server;
         try {
             server = Exchangers.bind(url, requestHandler);
         } catch (RemotingException e) {
             throw new RpcException("Fail to start server(url: " + url + ") " + e.getMessage(), e);
         }
+        // 校验 Client 的 Dubbo SPI 拓展是否存在
         str = url.getParameter(Constants.CLIENT_KEY);
         if (str != null && str.length() > 0) {
             Set<String> supportedTypes = ExtensionLoader.getExtensionLoader(Transporter.class).getSupportedExtensions();
