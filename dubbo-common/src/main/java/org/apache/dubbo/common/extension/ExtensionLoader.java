@@ -161,8 +161,9 @@ public class ExtensionLoader<T> {
     }
 
     @SuppressWarnings("unchecked")
-    /**
+    /**dubbo_spi的实现路径
      * 根据拓展点的接口，获得拓展加载器
+     * 实现路径：getExtensionLoader(Class<T> type)就是为该接口new一个ExtensionLoader，然后缓存起来
      */
     public static <T> ExtensionLoader<T> getExtensionLoader(Class<T> type) {
         if (type == null)
@@ -355,12 +356,13 @@ public class ExtensionLoader<T> {
         return Collections.unmodifiableSet(new TreeSet<String>(cachedInstances.keySet()));
     }
 
-    /**
+    /** dubbo-spi的目的：获取一个实现类的对象
      * Find the extension with the given name. If the specified name is not found, then {@link IllegalStateException}
      * will be thrown.
      */
     @SuppressWarnings("unchecked")
     /**
+     * 实现dubbo_spi的途径
      *  获得指定拓展对象  如果指定名字的扩展不存在，则抛异常 {@link IllegalStateException}
      */
     public T getExtension(String name) {
@@ -510,10 +512,11 @@ public class ExtensionLoader<T> {
     }
 
     @SuppressWarnings("unchecked")
-    /**
+    /**dubbo_spi实现路径
      * 获得自适应拓展对象
      * 创建 {@link #cachedAdaptiveInstance} 时发生的异常
      * 发生异常后，不再创建，参见 {@link #createAdaptiveExtension()}
+     * getAdaptiveExtension()获取一个扩展装饰类的对象，这个类有一个规则，如果他没有一个@Adaptive注解，就动态创建一个装饰类，例如Protocol$Adaptive对象
      */
     public T getAdaptiveExtension() {
         // 从缓存中，获得自适应拓展对象
