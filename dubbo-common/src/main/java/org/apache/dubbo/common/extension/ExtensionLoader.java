@@ -345,7 +345,6 @@ public class ExtensionLoader<T> {
      * @see #getSupportedExtensions()
      */
     public Set<String> getLoadedExtensions() {
-
         return Collections.unmodifiableSet(new TreeSet<String>(cachedInstances.keySet()));
     }
 
