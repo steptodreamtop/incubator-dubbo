@@ -42,7 +42,7 @@ public class ZkclientZookeeperClientTest {
         int zkServerPort = NetUtils.getAvailablePort();
         zkServer = new TestingServer(zkServerPort, true);
         zkclientZookeeperClient = new ZkclientZookeeperClient(URL.valueOf("zookeeper://127.0.0.1:" +
-                zkServerPort + "/org.apache.dubbo.registry.RegistryService"));
+                zkServerPort + "/<dubbo:registry address=\"zookeeper://127.0.0.1:2181\" client=\"zkclient\" />\norg.apache.dubbo.registry.RegistryService"));
     }
 
     @Test
