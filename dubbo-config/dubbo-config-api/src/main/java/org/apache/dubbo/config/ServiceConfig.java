@@ -384,6 +384,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
         // 加载注册中心 URL 数组
         List<URL> registryURLs = loadRegistries(true);
         // 循环 `protocols` ，向逐个注册中心分组暴露服务
+        //这个for循环代表了一个服务可以有多个通信协议，例如tcp协议 http协议，默认是tcp协议
         for (ProtocolConfig protocolConfig : protocols) {
             doExportUrlsFor1Protocol(protocolConfig, registryURLs);
         }
@@ -532,10 +533,12 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
         if (!Constants.SCOPE_NONE.equalsIgnoreCase(scope)) {
 
             // export to local if the config is not remote (export to remote only when config is remote)
+            // 配置不是remote的情况下做本地暴露（配置为remote,则只暴露远程服务）
             if (!Constants.SCOPE_REMOTE.equalsIgnoreCase(scope)) {
                 exportLocal(url);
             }
             // export to remote if the config is not local (export to local only when config is local)
+            //如果配置不是local则暴露为远程服务（配置为local,则表示只暴露本地服务）
             if (!Constants.SCOPE_LOCAL.equalsIgnoreCase(scope)) {
                 if (logger.isInfoEnabled()) {
                     logger.info("Export dubbo service " + interfaceClass.getName() + " to url " + url);
