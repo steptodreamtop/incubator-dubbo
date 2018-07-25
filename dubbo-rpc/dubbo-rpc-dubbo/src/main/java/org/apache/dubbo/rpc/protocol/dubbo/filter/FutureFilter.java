@@ -112,6 +112,10 @@ public class FutureFilter implements Filter {
                     }
                 }
 
+                /**
+                 * 触发异常回调方法
+                 * @param exception
+                 */
                 @Override
                 public void caught(Throwable exception) {
                     fireThrowCallback(invoker, invocation, exception);
